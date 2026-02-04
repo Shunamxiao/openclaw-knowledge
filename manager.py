@@ -10,8 +10,13 @@ EXPERIENCE_FILE = os.path.join(KB_PATH, "experience.md")
 
 def run_command(cmd):
     try:
+        # 使用 -j 标志（如果支持）或通过管道清理输出
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        return result.stdout.strip()
+        stdout = result.stdout.strip()
+        # 尝试寻找 JSON 部分 (如果输出包含非 JSON 文本)
+        if "{" in stdout:
+            stdout = stdout[stdout.find("{"):]
+        return stdout
     except Exception as e:
         return str(e)
 
